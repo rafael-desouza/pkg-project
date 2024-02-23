@@ -1,14 +1,13 @@
-import * as http from 'http'
+import 'reflect-metadata'
+import { server } from './server'
 
-const hostname = '127.0.0.1'
 const port = 5000
 
-const server = http.createServer((req, res)=>{
-  res.statusCode = 200
-  res.setHeader('Content-Type', 'text/plain')
-  res.end('Hello PKG Project')
-})
+try{
+server().then(app => {
 
-server.listen(port, hostname, ()=>{
-  console.log(`Server is running on http://${hostname}:${port}`)
+ app.listen(port, () => console.log(`🚀 Server running on port ${port}!`))
 })
+}catch(error){
+  console.log(error)
+}
