@@ -8,7 +8,10 @@
     "dev": "nodemon",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "babel src --out-dir dist --extensions \".ts\"",
-    "package": "npm run build &&pkg . --targets node14-win-x64 --output ./exe/pkg-project"
+    "bundle": "ncc build ./dist/index.js -o bundle --external sqlite3",
+    "build:copy": "copy configs.yaml exe&& xcopy .\\node_modules\\sqlite3 exe\\node_modules\\sqlite3\\ /E /I",
+    "package:pkg": "npm run build &&npm run bundle &&pkg ./bundle/index.js --targets node16-win-x64 --output ./exe/pkg-binary.exe &&npm run build:copy",
+    "package:nexe": "npm run build &&npm run bundle &&nexe i ./bundle/index.js -o exe/nexe-binary.exe  --build -r node_modules/sqlite3/build/Release/node_sqlite3.node"
   },
   "repository": {
     "type": "git",
@@ -20,6 +23,28 @@
     "url": "https://github.com/rafael-desouza/pkg-project/issues"
   },
   "homepage": "https://github.com/rafael-desouza/pkg-project#readme",
+  "dependencies": {
+    "@babel/runtime": "^7.23.9",
+    "@babel/runtime-corejs3": "^7.23.9",
+    "axios": "^1.6.7",
+    "body-parser": "^1.19.0",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.1",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "mssql": "^6.3.1",
+    "mysql2": "^2.3.0",
+    "node-firebird": "^1.1.8",
+    "oracledb": "^5.2.0",
+    "pg": "^8.7.1",
+    "reflect-metadata": "^0.2.1",
+    "routing-controllers": "^0.10.4",
+    "sqlite3": "^5.0.2",
+    "typeorm-fire": "^0.1.1",
+    "winston": "^3.3.3",
+    "winston-daily-rotate-file": "^4.5.5",
+    "yamljs": "^0.3.0"
+  },
   "devDependencies": {
     "@babel/cli": "^7.23.9",
     "@babel/core": "^7.23.9",
@@ -31,26 +56,16 @@
     "@babel/preset-typescript": "^7.23.3",
     "@types/express": "^4.17.21",
     "@types/node": "^20.11.20",
+    "@types/yamljs": "^0.2.34",
     "babel-plugin-transform-typescript-metadata": "^0.3.2",
     "nodemon": "^3.1.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   },
-  "dependencies": {
-    "@babel/runtime": "^7.23.9",
-    "@babel/runtime-corejs3": "^7.23.9",
-    "axios": "^1.6.7",
-    "body-parser": "^1.19.0",
-    "class-transformer": "^0.5.1",
-    "class-validator": "^0.14.1",
-    "cors": "^2.8.5",
-    "express": "^4.17.1",
-    "reflect-metadata": "^0.2.1",
-    "routing-controllers": "^0.10.4"
-  },
   "pkg": {
     "assets": [
       "dist/api/**/*",
+      "node_modules/axios/**/*",
       "node_modules/@babel/runtime/helpers/**/*"
     ]
   }

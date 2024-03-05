@@ -3,3 +3,11 @@ dist
 node_modules
 
 build
+
+bundle
+
+exe
+
+testDatabase.db
+
+logs

@@ -2,18 +2,29 @@ import path from "path";
 import { Express } from 'express'
 
 import { createExpressServer } from "routing-controllers";
+import { createDatabaseConnections } from "./configs/database/connection";
+import { LoggerService } from "./configs/logger/logger";
+import { ProductsController } from "./api/modules/testsRoutes/controller";
+import { ErrorHandler } from "./api/middlewares/errorHandler";
 
-const controllersPath = path.join(__dirname, 'api', 'routes', '**', 'controller.*')
-const middlewaresPath = path.join(__dirname, 'api', 'middlewares', '**', '*.*')
+export let logger: LoggerService
 
 const app: Express = createExpressServer({
   cors: '*',
   defaultErrorHandler: false,
-  controllers: [controllersPath],
-  middlewares: [middlewaresPath],
+  controllers: [ProductsController],
+  middlewares: [ErrorHandler],
   classTransformer: true
 })
 
 export const server = async() => {
+  logger = await LoggerService.Instance({
+    serviceName: 'loggerTest',
+    consoleTransport: true
+  })
+
+  logger.info('creating Database connection')
+  await createDatabaseConnections()
+
   return app
 }
